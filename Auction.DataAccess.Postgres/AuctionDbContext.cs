@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auction.DataAccess.Postgres
 {
-    public class AuctionDbContext:DbContext
+    public class AuctionDbContext : DbContext
     {
         public AuctionDbContext(DbContextOptions<AuctionDbContext> options) : base(options) { }
 
