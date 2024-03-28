@@ -361,5 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-Auction.API/appsettings.Development.json
-Auction.API/appsettings.json
+
+
+/Auction.API/appsettings.Development.json
+/Auction.API/appsettings.json
