@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\Auction.DataAccess.Postgres\Auction.DataAccess.Postgres.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Auction.DataAccess.Postgres\Auction.DataAccess.Postgres.csproj" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
