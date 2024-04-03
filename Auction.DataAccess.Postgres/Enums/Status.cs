@@ -1,4 +1,4 @@
-﻿namespace Auction.Application.Enums
+﻿namespace Auction.DataAccess.Postgres.Enums
 {
     public enum Status
     {

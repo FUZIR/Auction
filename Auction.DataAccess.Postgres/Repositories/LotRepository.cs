@@ -1,5 +1,5 @@
-﻿using Auction.Application.Enums;
-using Auction.DataAccess.Postgres.Entities;
+﻿using Auction.DataAccess.Postgres.Entities;
+using Auction.DataAccess.Postgres.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.DataAccess.Postgres.Repositories;
@@ -13,7 +13,7 @@ public class LotRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> CreateLot(Guid id, string name, string description, decimal startprice, decimal buyprice, Guid creatorId,
+    public async Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal buyprice, Guid creatorId,
         Guid buyerId)
     {
         var lot = new LotEntity()
@@ -37,19 +37,18 @@ public class LotRepository
         return lot.Id;
     }
 
-    public async Task DeleteLot(Guid id)
+    public async Task Delete(Guid id)
     {
-        var Lot = await _dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id);
-        _dbContext.Remove(Lot);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Lots.Where(l => l.Id == id).ExecuteDeleteAsync();
     }
 
-    public async Task<LotEntity> GetLot(Guid id)
+    public async Task<LotEntity> Get(Guid id)
     {
-        return await _dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id);
+        return await _dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id)?? throw new Exception();
     }
     
-    public async Task<IEnumerable<LotEntity>> GetAllLots()
+    
+    public async Task<IEnumerable<LotEntity>> GetAll()
     {
         return await _dbContext.Lots.ToListAsync();
     }

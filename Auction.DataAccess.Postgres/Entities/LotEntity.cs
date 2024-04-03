@@ -1,4 +1,4 @@
-﻿using Auction.Application.Enums;
+﻿using Auction.DataAccess.Postgres.Enums;
 
 namespace Auction.DataAccess.Postgres.Entities
 {

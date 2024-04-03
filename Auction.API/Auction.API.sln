@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction.API", "Auction.API.csproj", "{BA73B52F-1562-4EBB-8752-241EDC42BDAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auction.API", "Auction.API.csproj", "{BA73B52F-1562-4EBB-8752-241EDC42BDAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{785ADB19-5483-4220-AA32-745BCAAC7EF6} = {785ADB19-5483-4220-AA32-745BCAAC7EF6}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction.Application", "..\Auction.Application\Auction.Application.csproj", "{B4C3DF0E-D0BD-4F61-8E62-061860EE901A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auction.DataAccess.Postgres", "..\Auction.DataAccess.Postgres\Auction.DataAccess.Postgres.csproj", "{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction.DataAccess.Postgres", "..\Auction.DataAccess.Postgres\Auction.DataAccess.Postgres.csproj", "{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auction.App", "..\Auction.App\Auction.App.csproj", "{785ADB19-5483-4220-AA32-745BCAAC7EF6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{636CDF76-3DE2-4C68-A888-FFCE868B5CA1} = {636CDF76-3DE2-4C68-A888-FFCE868B5CA1}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +25,14 @@ Global
 		{BA73B52F-1562-4EBB-8752-241EDC42BDAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA73B52F-1562-4EBB-8752-241EDC42BDAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA73B52F-1562-4EBB-8752-241EDC42BDAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4C3DF0E-D0BD-4F61-8E62-061860EE901A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4C3DF0E-D0BD-4F61-8E62-061860EE901A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4C3DF0E-D0BD-4F61-8E62-061860EE901A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4C3DF0E-D0BD-4F61-8E62-061860EE901A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{636CDF76-3DE2-4C68-A888-FFCE868B5CA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{785ADB19-5483-4220-AA32-745BCAAC7EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{785ADB19-5483-4220-AA32-745BCAAC7EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{785ADB19-5483-4220-AA32-745BCAAC7EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{785ADB19-5483-4220-AA32-745BCAAC7EF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
