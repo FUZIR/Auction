@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Auction.DataAccess.Postgres\Auction.DataAccess.Postgres.csproj" />
   </ItemGroup>
 

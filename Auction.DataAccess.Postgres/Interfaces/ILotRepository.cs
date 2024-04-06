@@ -1,6 +1,6 @@
 ﻿using Auction.DataAccess.Postgres.Entities;
 
-namespace Auction.App.Interfaces;
+namespace Auction.DataAccess.Postgres.Interfaces;
 
 public interface ILotRepository
 {

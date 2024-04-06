@@ -1,9 +1,10 @@
-﻿using Auction.DataAccess.Postgres.Entities;
+﻿using Auction.App.Interfaces;
+using Auction.DataAccess.Postgres.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.DataAccess.Postgres.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly AuctionDbContext _dbContext;
 
@@ -12,24 +13,33 @@ public class UserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> Register(string email, string password, string nickname)
+    public async Task<Guid?> Register(Guid id, string email, string password, string nickname)
     {
-        var user = new UserEntity()
+        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (existingUser != null)
         {
-            Id = new Guid(),
+            throw new InvalidOperationException("User already registered");
+        }
+        var newUser = new UserEntity()
+        {
+            Id = id,
             Email = email,
             Password = password,
             Nickname = nickname,
 
         };
-        await _dbContext.AddAsync(user);
+        await _dbContext.AddAsync(newUser);
         await _dbContext.SaveChangesAsync();
-        return user.Id;
+        return newUser.Id;
     }
-    
-    public async Task<Guid> Login(string email, string password)
+
+    public async Task<Guid?> Login(string email, string password)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+        if (user == null)
+        {
+            return null;
+        }
         return user.Id;
     }
     

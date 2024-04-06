@@ -12,11 +12,11 @@ public class BidRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> CreateBid(Guid id, Guid lotId, Guid userId, decimal bid)
+    public async Task<Guid> CreateBid(Guid lotId, Guid userId, decimal bid)
     {
         var lotBid = new BidEntity()
         {
-            Id = id,
+            Id = new Guid(),
             LotId = lotId,
             UserId = userId,
             Bid = bid,
