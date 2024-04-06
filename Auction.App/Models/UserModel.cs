@@ -1,4 +1,6 @@
-﻿using Auction.DataAccess.Postgres;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
+using Auction.DataAccess.Postgres;
 
 namespace Auction.App.Models;
 
@@ -32,6 +34,12 @@ public class UserModel
         else if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(nickname))
         {
             error = "Fields cannot be empty";
+            return (null, error);
+        }
+        else if(!IsValidEmail(email))
+        {
+            error = "Invalid email";
+            return (null, error);
         }
         else if (password.Length < MIN_PASSWORD_LENGTH)
         {
@@ -40,4 +48,27 @@ public class UserModel
         var user = new UserModel(id, email, password, nickname,dbContext);
         return (user, error);
     }
+
+    private static bool IsValidEmail(string email)
+    {
+        string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
+    }
+    public static (Guid Id, string error) Login(string email, string password, AuctionDbContext dbContext)
+    {
+        var error = string.Empty;
+        var user = dbContext.Users.FirstOrDefault(u => u.Email == email);
+        if (user == null)
+        {
+            error = "User with such email not found";
+            return (Guid.Empty, error);
+        }
+        else if (user.Password!= password)
+        {
+            error = "Invalid password";
+            return (Guid.Empty, error);
+        }
+        return (user.Id, error);
+    }
+    
 }

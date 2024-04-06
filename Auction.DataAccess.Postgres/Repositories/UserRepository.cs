@@ -15,11 +15,6 @@ public class UserRepository : IUserRepository
 
     public async Task<Guid?> Register(Guid id, string email, string password, string nickname)
     {
-        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if (existingUser != null)
-        {
-            throw new InvalidOperationException("User already registered");
-        }
         var newUser = new UserEntity()
         {
             Id = id,
