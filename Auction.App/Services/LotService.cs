@@ -6,8 +6,8 @@ namespace Auction.App.Services;
 
 public class LotService(ILotRepository lotRepository) : ILotService
 {
-    public async Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal buyprice, Guid creatorId,
-        Guid buyerId)
+    public async Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal? buyprice, Guid creatorId,
+        Guid? buyerId)
     {
         return await lotRepository.Create(id, name, description, startprice, buyprice, creatorId, buyerId);
     }

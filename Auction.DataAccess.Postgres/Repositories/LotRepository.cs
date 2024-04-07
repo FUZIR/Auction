@@ -1,10 +1,11 @@
 ﻿using Auction.DataAccess.Postgres.Entities;
 using Auction.DataAccess.Postgres.Enums;
+using Auction.DataAccess.Postgres.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.DataAccess.Postgres.Repositories;
 
-public class LotRepository
+public class LotRepository : ILotRepository
 {
     private readonly AuctionDbContext _dbContext;
 
@@ -13,8 +14,8 @@ public class LotRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal buyprice, Guid creatorId,
-        Guid buyerId)
+    public async Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal? buyprice, Guid creatorId,
+        Guid? buyerId)
     {
         var lot = new LotEntity()
         {
@@ -23,9 +24,9 @@ public class LotRepository
             Description = description,
             StartingPrice = startprice,
             CurrentPrice = null,
-            BuyPrice = buyprice,
-            StartTime = DateTime.Now,
-            EndTime = DateTime.Now.AddDays(1),
+            BuyPrice = null,
+            StartTime = DateTime.UtcNow,
+            EndTime = DateTime.UtcNow.AddDays(1),
             Status = Status.ACTIVE,
             CreatorId = creatorId,
             BuyerId = buyerId

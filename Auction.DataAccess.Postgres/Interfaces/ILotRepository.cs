@@ -4,9 +4,9 @@ namespace Auction.DataAccess.Postgres.Interfaces;
 
 public interface ILotRepository
 {
-    public Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal buyprice,
+    public Task<Guid> Create(Guid id, string name, string description, decimal startprice, decimal? buyprice,
         Guid creatorId,
-        Guid buyerId);
+        Guid? buyerId);
 
     public Task Delete(Guid id);
 

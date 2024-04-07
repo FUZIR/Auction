@@ -33,13 +33,13 @@ namespace Auction.DataAccess.Postgres.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     StartingPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    CurrentPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    BuyPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    CurrentPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    BuyPrice = table.Column<decimal>(type: "numeric", nullable: true),
                     StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BuyerId = table.Column<Guid>(type: "uuid", nullable: false)
+                    BuyerId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,8 +48,7 @@ namespace Auction.DataAccess.Postgres.Migrations
                         name: "FK_Lots_Users_BuyerId",
                         column: x => x.BuyerId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Lots_Users_CreatorId",
                         column: x => x.CreatorId,

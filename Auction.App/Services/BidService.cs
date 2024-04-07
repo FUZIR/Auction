@@ -3,7 +3,7 @@ using Auction.DataAccess.Postgres.Entities;
 
 namespace Auction.App.Services;
 
-public class BidService(IBidRepository bidRepository) : IBidService
+public class BidService(IBidRepository bidRepository) : IBidService, IBidRepository
 {
     public async Task<Guid> CreateBid(Guid lotId, Guid userId, decimal bid)
     {

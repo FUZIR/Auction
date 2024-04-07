@@ -1,9 +1,10 @@
-﻿using Auction.DataAccess.Postgres.Entities;
+﻿using Auction.App.Interfaces;
+using Auction.DataAccess.Postgres.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.DataAccess.Postgres.Repositories;
 
-public class BidRepository
+public class BidRepository : IBidRepository
 {
     private readonly AuctionDbContext _dbContext;
 

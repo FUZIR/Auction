@@ -55,16 +55,16 @@ namespace Auction.DataAccess.Postgres.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("BuyPrice")
+                    b.Property<decimal?>("BuyPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("BuyerId")
+                    b.Property<Guid?>("BuyerId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CreatorId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("CurrentPrice")
+                    b.Property<decimal?>("CurrentPrice")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -143,9 +143,7 @@ namespace Auction.DataAccess.Postgres.Migrations
                 {
                     b.HasOne("Auction.DataAccess.Postgres.Entities.UserEntity", "Buyer")
                         .WithMany("BoughtLots")
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BuyerId");
 
                     b.HasOne("Auction.DataAccess.Postgres.Entities.UserEntity", "Creator")
                         .WithMany("CreatedLots")

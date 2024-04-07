@@ -22,7 +22,7 @@ public class UserModel
     public string Password { get; set; } = string.Empty ;
     public string Nickname { get; set; } = string.Empty;
 
-    public static (UserModel User, string Error) Create(Guid id, string email, string password, string nickname, AuctionDbContext dbContext)    
+    public static async Task<(UserModel User, string Error)> Create(Guid id, string email, string password, string nickname, AuctionDbContext dbContext)    
     {
         var error = string.Empty;
         var existingUser = dbContext.Users.FirstOrDefault(u => u.Email == email || u.Nickname == nickname);
@@ -54,7 +54,7 @@ public class UserModel
         string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
     }
-    public static (Guid Id, string error) Login(string email, string password, AuctionDbContext dbContext)
+    public static async Task<(Guid Id, string error)> Login(string email, string password, AuctionDbContext dbContext)
     {
         var error = string.Empty;
         var user = dbContext.Users.FirstOrDefault(u => u.Email == email);

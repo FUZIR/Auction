@@ -14,7 +14,7 @@ public class UserController(IUserService userService) : ControllerBase
     [Route(("register"))]
     public async Task<ActionResult<Guid>> Register([FromBody]CreateUserDTO userDto, [FromServices]AuctionDbContext dbContext)
     {
-        var (userModel, error) = UserModel.Create(
+        var (userModel, error) = await UserModel.Create(
             Guid.NewGuid(),
             userDto.email,
             userDto.password,
@@ -33,7 +33,7 @@ public class UserController(IUserService userService) : ControllerBase
     [Route(("login"))]
     public async Task<ActionResult<Guid>> Login([FromBody] UserLoginDTO userDto, [FromServices]AuctionDbContext dbContext)
     {
-        var (userId, error) = UserModel.Login(userDto.email, userDto.password, dbContext);
+        var (userId, error) = await UserModel.Login(userDto.email, userDto.password, dbContext);
 
         if (!string.IsNullOrEmpty(error))
         {

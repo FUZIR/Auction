@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Auction.DataAccess.Postgres;
+using Auction.DataAccess.Postgres.Interfaces;
 using Auction.DataAccess.Postgres.Repositories;
 
 public class Startup
@@ -19,9 +20,14 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<AuctionDbContext>(options =>
-            options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")),
+            ServiceLifetime.Transient);
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ILotRepository, LotRepository>();
+        services.AddScoped<ILotService, LotService>();
+        services.AddScoped<IBidRepository, BidRepository>();
+        services.AddScoped<IBidService, BidService>();
         
         // Other service configurations...
     }
