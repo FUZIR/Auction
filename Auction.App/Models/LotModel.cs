@@ -1,4 +1,5 @@
-﻿using Auction.DataAccess.Postgres;
+﻿using Auction.App.Services;
+using Auction.DataAccess.Postgres;
 using Auction.DataAccess.Postgres.Entities;
 using Auction.DataAccess.Postgres.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -63,5 +64,61 @@ public class LotModel
         }
         var lot = new LotModel(id, name, description, startingPrice, currentPrice, buyPrice,startTime, endTime, status, creatorId, buyerId, dbContext);
         return (lot, error);
+    }
+
+    public static async Task<(Guid id, string error)> Delete(Guid id, AuctionDbContext dbContext)
+    {
+        var error = string.Empty;
+        var lot = await dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id);
+        
+        if (lot == null)
+        {
+            error = "Lot with such id not found";
+            return (Guid.Empty, error);
+        }
+
+        return (lot.Id, error);
+
+    }
+
+    public static async Task<(LotEntity lot, string error)> Get(Guid id, AuctionDbContext dbContext)
+    {
+        var error = string.Empty;
+        var lot = await dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id);
+
+        if (lot == null)
+        {
+            error = "Lot with such id not found";
+            return (null, error);
+        }
+
+        return (lot, error);
+    }
+
+    public static async Task<(List<LotEntity>, string error)> GetAll(AuctionDbContext dbContext)
+    {
+        var error = string.Empty;
+        var lots = await dbContext.Lots.ToListAsync();
+
+        if (lots == null)
+        {
+            error = "Lots not found";
+            return (null, error);
+        }
+
+        return (lots, error);
+    }
+
+    public static async Task<(List<LotEntity>, string error)> GetAllUserLots(Guid userId, AuctionDbContext dbContext)
+    {
+        var error = string.Empty;
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            error = "User with such id not found";
+            return (null, error);
+        }
+        var lots = await dbContext.Lots.Where(l => l.CreatorId == userId).ToListAsync();
+        return (lots, error);
     }
 }
