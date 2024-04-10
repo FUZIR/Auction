@@ -13,15 +13,15 @@ public class BidRepository : IBidRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> CreateBid(Guid lotId, Guid userId, decimal bid)
+    public async Task<Guid> CreateBid(Guid id,Guid lotId, Guid userId, decimal bid, DateTime timestamp)
     {
         var lotBid = new BidEntity()
         {
-            Id = new Guid(),
+            Id = id,
             LotId = lotId,
             UserId = userId,
             Bid = bid,
-            TimeStamp = DateTime.Now
+            TimeStamp = timestamp
         };
         await _dbContext.Bids.AddAsync(lotBid);
         await _dbContext.SaveChangesAsync();
