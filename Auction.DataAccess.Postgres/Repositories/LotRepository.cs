@@ -58,4 +58,6 @@ public class LotRepository : ILotRepository
     {
         return await _dbContext.Lots.Where(l => l.CreatorId == userId).ToListAsync();
     }
+
+    
 }

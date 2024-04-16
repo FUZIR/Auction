@@ -1,4 +1,5 @@
 ﻿using Auction.App.Interfaces;
+using Auction.DataAccess.Postgres;
 using Auction.DataAccess.Postgres.Entities;
 using Auction.DataAccess.Postgres.Interfaces;
 
@@ -31,4 +32,6 @@ public class LotService(ILotRepository lotRepository) : ILotService
     {
         return await lotRepository.GetAllUserLots(userId);
     }
+
+    
 }

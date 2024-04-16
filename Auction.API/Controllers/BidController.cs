@@ -29,4 +29,5 @@ public class BidController(IBidService bidService):ControllerBase
         await bidService.CreateBid(bidModel.Id, bidModel.LotId, bidModel.UserId, bidModel.Bid, bidModel.TimeStamp);
         return Ok(bidModel.Id);
     }
+    
 }

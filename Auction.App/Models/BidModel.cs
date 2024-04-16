@@ -31,7 +31,7 @@ public class BidModel
             error = "Lot with such id not found";
             return (null, error);
         }
-        else if (lot.CurrentPrice > bid)
+        else if (lot.CurrentPrice > bid || bid < lot.StartingPrice)
         {
             error = "Invalid bid";
             return (null, error);
@@ -42,6 +42,19 @@ public class BidModel
             return (null, error);
         } 
         var newBid = new BidModel(id, lotId, userId, bid, timeStamp, dbContext);
+        await UpdateCurrentLot(lotId, bid, dbContext);
         return (newBid, error);
+    }
+
+    private static async Task UpdateCurrentLot(Guid lotId, decimal newBid, AuctionDbContext dbContext)
+    {
+        var lot = await dbContext.Lots.FindAsync(lotId);
+
+        if (lot != null)
+        {
+            lot.CurrentPrice = newBid;
+            await dbContext.SaveChangesAsync();
+        }
+
     }
 }

@@ -11,4 +11,5 @@ public interface ILotService
     Task<LotEntity> Get(Guid id);
     Task<IEnumerable<LotEntity>> GetAll();
     Task<IEnumerable<LotEntity>> GetAllUserLots(Guid userId);
+    
 }

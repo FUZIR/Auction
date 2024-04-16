@@ -42,6 +42,18 @@ public class LotController(ILotService lotService):ControllerBase
         }
         await lotService.Create(lotModel.Id, lotModel.Name, lotModel.Description, lotModel.StartingPrice,
             lotModel.BuyPrice, lotModel.CreatorId, lotModel.BuyerId);
+
+        var checkInterval = TimeSpan.FromMinutes(1);
+        var lotExpirationTask = lotModel.StartLotExpirationTracking(lotModel.Id, checkInterval);
+        
+        _ = lotExpirationTask.ContinueWith(task =>
+        {
+            if (task.Exception != null)
+            {
+                Console.WriteLine($"Error occurred while tracking lot expiration: {task.Exception}");
+            }
+        });
+        
         return Ok(lotModel.Id);
     }
 

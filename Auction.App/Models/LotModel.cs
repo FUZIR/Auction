@@ -121,4 +121,42 @@ public class LotModel
         var lots = await dbContext.Lots.Where(l => l.CreatorId == userId).ToListAsync();
         return (lots, error);
     }
+
+    public async Task StartLotExpirationTracking(Guid lotId, TimeSpan checkInterval)
+    {
+        while (true)
+        {
+            if (!IsLotExpired())
+            {
+                var lot = await _dbContext.Lots.FindAsync(lotId);
+                if (lot != null)
+                {
+                    if (lot.CurrentPrice != null)
+                    {
+                        var lastBid = await _dbContext.Bids
+                            .Where(b => b.LotId == lotId)
+                            .OrderByDescending(b => b.TimeStamp)
+                            .FirstOrDefaultAsync();
+                        lot.Status = Status.SOLD;
+                        lot.BuyPrice = lastBid.Bid;
+                        lot.BuyerId = lastBid.UserId;
+                    }
+                    else
+                    {
+                        lot.Status = Status.EXPIRED;
+                        lot.BuyPrice = null;
+                        lot.BuyerId = null;
+                    }
+                    await _dbContext.SaveChangesAsync();
+                }
+                
+                break;
+            }
+            await Task.Delay(checkInterval);
+        }
+    }
+    public bool IsLotExpired()
+    {
+        return DateTime.UtcNow > EndTime;
+    }
 }

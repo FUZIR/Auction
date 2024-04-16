@@ -15,4 +15,5 @@ public interface ILotRepository
     public Task<IEnumerable<LotEntity>> GetAll();
 
     public Task<IEnumerable<LotEntity>> GetAllUserLots(Guid userId);
+    
 }
