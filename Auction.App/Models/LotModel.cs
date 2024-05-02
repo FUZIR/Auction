@@ -9,7 +9,13 @@ namespace Auction.App.Models;
 public class LotModel
 {
     private readonly AuctionDbContext _dbContext;
-    private LotModel(Guid id, string name, string description, decimal startingPrice, decimal? currentPrice, decimal? buyPrice,
+    private Timer _timer;
+
+    public LotModel(AuctionDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+    public LotModel(Guid id, string name, string description, decimal startingPrice, decimal? currentPrice, decimal? buyPrice,
         DateTime startTime, DateTime endTime, Status status, Guid creatorId, Guid? buyerId, AuctionDbContext dbContext)
     {
         Id = id;
@@ -39,7 +45,7 @@ public class LotModel
 
     public static async Task<(LotModel lot, string error)> Create(Guid id, string name, string description, decimal startingPrice,
         decimal? currentPrice, decimal? buyPrice,
-        DateTime startTime, DateTime endTime, Status status, Guid creatorId, Guid? buyerId,AuctionDbContext dbContext)
+        DateTime startTime,DateTime endTime, Status status, Guid creatorId, Guid? buyerId, AuctionDbContext dbContext)
     {
         var error = string.Empty;
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == creatorId);
@@ -53,7 +59,7 @@ public class LotModel
             error = "Name or description cannot be empty";
             return (null, error);
         }
-        else if (startingPrice <= 0 || buyPrice <= 0  )
+        else if (startingPrice <= 0 || buyPrice <= 0)
         {
             error = "Starting price must be greater than zero";
         }
@@ -62,7 +68,9 @@ public class LotModel
             error = "Buy price cannot be less than starting price";
             return (null, error);
         }
-        var lot = new LotModel(id, name, description, startingPrice, currentPrice, buyPrice,startTime, endTime, status, creatorId, buyerId, dbContext);
+
+        var lot = new LotModel(id, name, description, startingPrice, currentPrice, buyPrice, startTime, endTime, status, creatorId, buyerId, dbContext);
+        
         return (lot, error);
     }
 
@@ -84,7 +92,11 @@ public class LotModel
     public static async Task<(LotEntity lot, string error)> Get(Guid id, AuctionDbContext dbContext)
     {
         var error = string.Empty;
-        var lot = await dbContext.Lots.FirstOrDefaultAsync(l => l.Id == id);
+        var lot = await dbContext.Lots
+            .Include(l=>l.Creator)
+            .Include(l => l.Buyer)
+            .FirstOrDefaultAsync(l => l.Id == id);
+            
 
         if (lot == null)
         {
@@ -98,7 +110,9 @@ public class LotModel
     public static async Task<(List<LotEntity>, string error)> GetAll(AuctionDbContext dbContext)
     {
         var error = string.Empty;
-        var lots = await dbContext.Lots.ToListAsync();
+        var lots = await dbContext.Lots
+            .Include(l=>l.Creator)
+            .ToListAsync();
 
         if (lots == null)
         {
@@ -106,6 +120,10 @@ public class LotModel
             return (null, error);
         }
 
+        foreach (var lot in lots)
+        {
+            lot.Creator.CreatedLots = null;
+        }
         return (lots, error);
     }
 
@@ -121,42 +139,45 @@ public class LotModel
         var lots = await dbContext.Lots.Where(l => l.CreatorId == userId).ToListAsync();
         return (lots, error);
     }
-
-    public async Task StartLotExpirationTracking(Guid lotId, TimeSpan checkInterval)
+    public void StartTrackingLotExpirations(TimeSpan checkInterval)
     {
-        while (true)
+        _timer = new Timer(CheckLotExpirations, null, TimeSpan.Zero, checkInterval);
+    }
+
+    private async void CheckLotExpirations(object state)
+    {
+        var lots = await _dbContext.Lots.ToListAsync();
+        foreach (var lot in lots)
         {
-            if (!IsLotExpired())
+            if (DateTime.UtcNow >= lot.EndTime && lot.Status == Status.ACTIVE)
             {
-                var lot = await _dbContext.Lots.FindAsync(lotId);
-                if (lot != null)
+                if (lot.CurrentPrice != null)
                 {
-                    if (lot.CurrentPrice != null)
+                    lot.Status = Status.SOLD;
+                    lot.BuyPrice = lot.CurrentPrice;
+                    var lastBid = await _dbContext.Bids
+                        .Where(b => b.LotId == lot.Id)
+                        .OrderByDescending(b => b.TimeStamp)
+                        .FirstOrDefaultAsync();
+                    if (lastBid != null)
                     {
-                        var lastBid = await _dbContext.Bids
-                            .Where(b => b.LotId == lotId)
-                            .OrderByDescending(b => b.TimeStamp)
-                            .FirstOrDefaultAsync();
-                        lot.Status = Status.SOLD;
-                        lot.BuyPrice = lastBid.Bid;
                         lot.BuyerId = lastBid.UserId;
                     }
-                    else
-                    {
-                        lot.Status = Status.EXPIRED;
-                        lot.BuyPrice = null;
-                        lot.BuyerId = null;
-                    }
-                    await _dbContext.SaveChangesAsync();
                 }
-                
-                break;
+                else
+                {
+                    lot.Status = Status.EXPIRED;
+                    lot.BuyPrice = null;
+                    lot.BuyerId = null;
+                }
             }
-            await Task.Delay(checkInterval);
         }
+        await _dbContext.SaveChangesAsync();
     }
-    public bool IsLotExpired()
+
+    public void StopTrackingLotExpirations()
     {
-        return DateTime.UtcNow > EndTime;
+        _timer?.Dispose();
     }
+    
 }

@@ -1,4 +1,5 @@
-﻿using Auction.DataAccess.Postgres.Enums;
+﻿using System.Text.Json.Serialization;
+using Auction.DataAccess.Postgres.Enums;
 
 namespace Auction.DataAccess.Postgres.Entities
 {

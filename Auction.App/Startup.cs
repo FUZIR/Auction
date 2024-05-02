@@ -1,4 +1,5 @@
-﻿using Auction.App.Interfaces;
+﻿using Auction.App;
+using Auction.App.Interfaces;
 using Auction.App.Models;
 using Auction.App.Services;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Auction.DataAccess.Postgres;
 using Auction.DataAccess.Postgres.Interfaces;
 using Auction.DataAccess.Postgres.Repositories;
+using Microsoft.AspNetCore.Builder;
 
 public class Startup
 {
@@ -28,9 +30,8 @@ public class Startup
         services.AddScoped<ILotService, LotService>();
         services.AddScoped<IBidRepository, BidRepository>();
         services.AddScoped<IBidService, BidService>();
-        
+        services.AddHostedService<LotExpirationService>();
         // Other service configurations...
     }
-
     // Other methods...
 }

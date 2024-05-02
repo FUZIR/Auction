@@ -42,6 +42,18 @@ builder.Services.AddDbContext<AuctionDbContext>(
         options.UseNpgsql(configuration.GetConnectionString(nameof(AuctionDbContext)));
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,7 +62,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowOrigins");
 app.UseResponseCompression();
 app.UseAuthorization();
 

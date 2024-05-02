@@ -19,6 +19,7 @@ public class LotController(ILotService lotService):ControllerBase
     {
         ReferenceHandler = ReferenceHandler.Preserve
     };
+    
     [HttpPost]
     [Route("create")]
     public async Task<ActionResult<Guid>> Create([FromBody]CreateLotDTO lotDTO, [FromServices] AuctionDbContext dbContext)
@@ -30,7 +31,7 @@ public class LotController(ILotService lotService):ControllerBase
             null,
             null,
             DateTime.UtcNow,
-            DateTime.UtcNow.AddDays(1),
+            DateTime.UtcNow.AddDays(24),
             Status.ACTIVE,
             lotDTO.creatorId,
             null,
@@ -40,19 +41,10 @@ public class LotController(ILotService lotService):ControllerBase
         {
             return BadRequest(error);
         }
+        
         await lotService.Create(lotModel.Id, lotModel.Name, lotModel.Description, lotModel.StartingPrice,
             lotModel.BuyPrice, lotModel.CreatorId, lotModel.BuyerId);
 
-        var checkInterval = TimeSpan.FromMinutes(1);
-        var lotExpirationTask = lotModel.StartLotExpirationTracking(lotModel.Id, checkInterval);
-        
-        _ = lotExpirationTask.ContinueWith(task =>
-        {
-            if (task.Exception != null)
-            {
-                Console.WriteLine($"Error occurred while tracking lot expiration: {task.Exception}");
-            }
-        });
         
         return Ok(lotModel.Id);
     }
@@ -82,7 +74,8 @@ public class LotController(ILotService lotService):ControllerBase
         {
             return BadRequest(error);
         }
-        return Ok(lot);
+        var json = JsonSerializer.Serialize(lot, options);
+        return Ok(json);
     }
 
     [HttpGet]
