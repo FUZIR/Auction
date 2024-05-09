@@ -136,7 +136,23 @@ public class LotModel
             error = "User with such id not found";
             return (null, error);
         }
-        var lots = await dbContext.Lots.Where(l => l.CreatorId == userId).ToListAsync();
+        var lots = await dbContext.Lots.Where(l => l.CreatorId == userId)
+            .Select(lot => new LotEntity
+            {
+                Id = lot.Id,
+                Name = lot.Name,
+                Description = lot.Description,
+                StartingPrice = lot.StartingPrice,
+                CurrentPrice = lot.CurrentPrice,
+                BuyPrice = lot.BuyPrice,
+                StartTime = lot.StartTime,
+                EndTime = lot.EndTime,
+                Status = lot.Status,
+                CreatorId = lot.CreatorId,
+                Creator = null,
+                BuyerId = lot.BuyerId,
+                Buyer = null
+            }).ToListAsync();
         return (lots, error);
     }
     public void StartTrackingLotExpirations(TimeSpan checkInterval)
