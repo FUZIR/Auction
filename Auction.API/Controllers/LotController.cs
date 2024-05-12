@@ -51,7 +51,7 @@ public class LotController(ILotService lotService):ControllerBase
 
     [HttpDelete]
     [Route("delete")]
-    public async Task<ActionResult> CreateDelete([FromBody]Guid id, [FromServices]AuctionDbContext dbContext)
+    public async Task<ActionResult> Delete([FromQuery]Guid id, [FromServices]AuctionDbContext dbContext)
     {
         var (LotId, error) = await LotModel.Delete(id, dbContext);
         if (!string.IsNullOrEmpty(error))
